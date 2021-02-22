@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "904660155453",
+    "project_id": "bird-watcher-fbd51",
+    "storage_bucket": "bird-watcher-fbd51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904660155453:android:0d4db0fbee84b2acae3e54",
+        "android_client_info": {
+          "package_name": "edu.augustana.BirdCounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904660155453-ajupsgfr7uahhc61ksn7fhg4mkbrc542.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.augustana.BirdCounter",
+            "certificate_hash": "c57d8c7b44d7b139b034c42ba65c3fadef05a25f"
+          }
+        },
+        {
+          "client_id": "904660155453-t26oq9gdml7rde4qq3bnt747bknd8pmv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx3tSVn7FYL9VEs5NnjGhdWlux5KpoRsM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904660155453-t26oq9gdml7rde4qq3bnt747bknd8pmv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
