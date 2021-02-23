@@ -1,24 +1,31 @@
 package edu.augustana.BirdCounter;
 
+import android.app.ActionBar;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -33,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
     Button increment;
     Button decrement;
     Button reset;
+    FloatingActionButton addBird;
+    Button submit;
+    Button cancel;
+    PopupWindow window;
+    TextView newBird;
+    CoordinatorLayout main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot bird : snapshot.getChildren()) {
                     String name = bird.getKey();
+                    //https://stackoverflow.com/questions/47423405/store-integer-value-into-a-variable-from-firebase
                     int count = Integer.valueOf("" + bird.child("Count").getValue());
                     birdList.add(new Bird(name, count));
                     Log.d("Test", birdList.toString());
@@ -85,13 +99,33 @@ public class MainActivity extends AppCompatActivity {
         decrement = findViewById(R.id.decrement);
         reset = findViewById(R.id.reset);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        addBird = findViewById(R.id.addBird);
+        main = findViewById(R.id.mainLayout);
+        addBird.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myRef.setValue("A birb");
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View customView = layoutInflater.inflate(R.layout.new_bird_popup,null);
+                newBird = customView.findViewById(R.id.newBird);
+                submit = (Button) customView.findViewById(R.id.submit);
+                cancel = customView.findViewById(R.id.cancel);
+                window = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                window.showAtLocation(main, Gravity.CENTER, 0, 0);
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        window.dismiss();
+                    }
+                });
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String name = newBird.getText().toString();
+                        birdList.add(new Bird(name, 0));
+                        myRef.child(name).child("Count").setValue(0);
+                        window.dismiss();
+                    }
+                });
             }
         });
     }
