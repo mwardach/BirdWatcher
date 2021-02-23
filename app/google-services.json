@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "904660155453",
+    "firebase_url": "https://bird-watcher-fbd51-default-rtdb.firebaseio.com",
     "project_id": "bird-watcher-fbd51",
     "storage_bucket": "bird-watcher-fbd51.appspot.com"
   },
