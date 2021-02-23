@@ -1,27 +1,35 @@
 package edu.augustana.BirdCounter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+//Used as a guide for adding GridView: https://abhiandroid.com/ui/gridview
+
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference myRef;
     GridView birdGrid;
-    ArrayList birdList = new ArrayList<Bird>();
+    ArrayList<Bird> birdList = new ArrayList<Bird>();
     Button increment;
     Button decrement;
     Button reset;
@@ -31,16 +39,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         birdGrid = (GridView) findViewById(R.id.birdGrid);
+        myRef = FirebaseDatabase.getInstance().getReference();
 
-        myRef.child("Sparrow").setValue(0);
-        myRef.child("Sandpiper").setValue(0);
-        myRef.child("Saddleback").setValue(0);
-        myRef.child("Shoveler").setValue(0);
-        myRef.child("Starling").setValue(0);
-        myRef.child("Surfbird").setValue(0);
-        myRef.child("Swallow").setValue(0);
+        //Populates GridView
+        final MyAdapter myAdapter=new MyAdapter(this,R.layout.bird_item, birdList);
+        birdGrid.setAdapter(myAdapter);
 
-        birdList.add(new Bird("Sparrow", 0));
+        //Pulls bird information from Firebase Database and updates Gridview when something is changed
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot bird : snapshot.getChildren()) {
+                    String name = bird.getKey();
+                    int count = Integer.valueOf("" + bird.child("Count").getValue());
+                    birdList.add(new Bird(name, count));
+                    Log.d("Test", birdList.toString());
+                }
+                //Received this code from https://stackoverflow.com/questions/52559068/load-data-from-firebase-real-database-into-gridview
+                //Updates gridview when Firebase is updated
+                myAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        /*birdList.add(new Bird("Sparrow", 0));
         birdList.add(new Bird("Sparrow", 1));
         birdList.add(new Bird("Sparrow", 2));
         birdList.add(new Bird("Sparrow", 3));
@@ -48,10 +74,9 @@ public class MainActivity extends AppCompatActivity {
         birdList.add(new Bird("Sparrow", 5));
         birdList.add(new Bird("Sparrow", 6));
         birdList.add(new Bird("Sparrow", 7));
-        birdList.add(new Bird("Sparrow", 8));
+        birdList.add(new Bird("Sparrow", 8));*/
 
-        MyAdapter myAdapter=new MyAdapter(this,R.layout.bird_item, birdList);
-        birdGrid.setAdapter(myAdapter);
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,12 +85,6 @@ public class MainActivity extends AppCompatActivity {
         decrement = findViewById(R.id.decrement);
         reset = findViewById(R.id.reset);
 
-        increment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

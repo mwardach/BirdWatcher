@@ -5,6 +5,10 @@ public class Bird {
     String birdName;
     int birdCount;
 
+    public Bird() {
+
+    }
+
     public Bird(String birdName, int birdCount) {
         this.birdName = birdName;
         this.birdCount = birdCount;
@@ -16,5 +20,9 @@ public class Bird {
 
     public int getBirdCount() {
         return birdCount;
+    }
+
+    public void setBirdCount(int count) {
+        birdCount = count;
     }
 }
