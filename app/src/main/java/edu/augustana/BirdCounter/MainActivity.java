@@ -1,6 +1,5 @@
 package edu.augustana.BirdCounter;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 //Used as a guide for adding GridView: https://abhiandroid.com/ui/gridview
 
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     PopupWindow window;
     TextView newBird;
     CoordinatorLayout main;
+    MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +55,8 @@ public class MainActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference();
 
         //Populates GridView
-        final MyAdapter myAdapter=new MyAdapter(this,R.layout.bird_item, birdList);
+        myAdapter = new MyAdapter(this,R.layout.bird_item, birdList);
         birdGrid.setAdapter(myAdapter);
-
         //Pulls bird information from Firebase Database and updates Gridview when something is changed
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -80,18 +79,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*birdList.add(new Bird("Sparrow", 0));
-        birdList.add(new Bird("Sparrow", 1));
-        birdList.add(new Bird("Sparrow", 2));
-        birdList.add(new Bird("Sparrow", 3));
-        birdList.add(new Bird("Sparrow", 4));
-        birdList.add(new Bird("Sparrow", 5));
-        birdList.add(new Bird("Sparrow", 6));
-        birdList.add(new Bird("Sparrow", 7));
-        birdList.add(new Bird("Sparrow", 8));*/
-
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -99,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         decrement = findViewById(R.id.decrement);
         reset = findViewById(R.id.reset);
 
+        //Tutorial for popup window: https://www.thecrazyprogrammer.com/2017/07/android-popupwindow-example.html
         addBird = findViewById(R.id.addBird);
         main = findViewById(R.id.mainLayout);
         addBird.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +133,27 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.nameSort) {
+            myAdapter.sort(new Comparator<Bird>() {
+                @Override
+                public int compare(Bird b1, Bird b2) {
+                    return b1.getBirdName().compareToIgnoreCase(b2.getBirdName());
+                }
+            });
+            return true;
+        } else if (id == R.id.countSort) {
+            myAdapter.sort(new Comparator<Bird>() {
+                @Override
+                public int compare(Bird b1, Bird b2) {
+                    if (b1.getBirdCount() < b2.getBirdCount()) {
+                        return -1;
+                    } else if (b2.getBirdCount() < b1.getBirdCount()) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
             return true;
         }
 
