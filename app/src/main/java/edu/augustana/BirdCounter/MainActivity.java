@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton addBird;
     Button submit;
     Button cancel;
-    PopupWindow window;
+    PopupWindow addWindow;
     TextView newBird;
     CoordinatorLayout main;
     MyAdapter myAdapter;
@@ -97,12 +97,12 @@ public class MainActivity extends AppCompatActivity {
                 newBird = customView.findViewById(R.id.newBird);
                 submit = (Button) customView.findViewById(R.id.submit);
                 cancel = customView.findViewById(R.id.cancel);
-                window = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-                window.showAtLocation(main, Gravity.CENTER, 0, 0);
+                addWindow= new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                addWindow.showAtLocation(main, Gravity.CENTER, 0, 0);
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        window.dismiss();
+                        addWindow.dismiss();
                     }
                 });
                 submit.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         String name = newBird.getText().toString();
                         birdList.add(new Bird(name, 0));
                         myRef.child(name).child("Count").setValue(0);
-                        window.dismiss();
+                        addWindow.dismiss();
                     }
                 });
             }
@@ -141,11 +141,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             return true;
-        } else if (id == R.id.countSort) {
+        } else if (id == R.id.countSortLoHigh) {
             myAdapter.sort(new Comparator<Bird>() {
                 @Override
                 public int compare(Bird b1, Bird b2) {
                     if (b1.getBirdCount() < b2.getBirdCount()) {
+                        return -1;
+                    } else if (b2.getBirdCount() < b1.getBirdCount()) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+            return true;
+        } else if (id == R.id.countSortHiLo) {
+            myAdapter.sort(new Comparator<Bird>() {
+                @Override
+                public int compare(Bird b1, Bird b2) {
+                    if (b1.getBirdCount() > b2.getBirdCount()) {
                         return -1;
                     } else if (b2.getBirdCount() < b1.getBirdCount()) {
                         return 1;

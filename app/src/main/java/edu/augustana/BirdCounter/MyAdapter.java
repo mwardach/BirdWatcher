@@ -1,12 +1,17 @@
 package edu.augustana.BirdCounter;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,6 +39,7 @@ public class MyAdapter extends ArrayAdapter {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         v = inflater.inflate(R.layout.bird_item, null);
 
+        LinearLayout gridCell = v.findViewById(R.id.gridCell);
         birdRef = FirebaseDatabase.getInstance().getReference();
         TextView birdName = (TextView) v.findViewById(R.id.birdName);
         Button increment = (Button) v.findViewById(R.id.increment);

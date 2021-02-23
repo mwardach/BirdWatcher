@@ -8,6 +8,9 @@
         android:title="@string/name_sort"
         app:showAsAction="never" />
     <item
-        android:id="@+id/countSort"
-        android:title="@string/count_sort" />
+        android:id="@+id/countSortLoHigh"
+        android:title="@string/count_sort_lohi" />
+    <item
+        android:id="@+id/countSortHiLo"
+        android:title="@string/count_sort_hilo" />
 </menu>
